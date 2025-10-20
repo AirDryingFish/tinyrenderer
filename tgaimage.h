@@ -24,12 +24,37 @@ struct TGAColor {
     std::uint8_t bgra[4] = {0,0,0,0};
     std::uint8_t bytespp = 4;
     std::uint8_t& operator[](const int i) { return bgra[i]; }
+    TGAColor operator*(double factor) const{
+        TGAColor res;
+        for (int i = 0; i < 3; i++){
+            int val = static_cast<int>(bgra[i] * factor);
+            if (val > 255){
+                val = 255;
+            }
+            res.bgra[i] = static_cast<std::uint8_t>(val);
+        }
+        res.bgra[3] = 255;
+        return res;
+    }
+
+    TGAColor operator+(const TGAColor& other){
+        TGAColor res;
+        for (int i = 0; i < 3; i++){
+            int val = bgra[i] + other.bgra[i];
+            if (val > 255){
+                val = 255;
+            }
+            res.bgra[i] = static_cast<std::uint8_t>(val);
+        }
+        return res;
+    }
 };
 
 struct TGAImage {
     enum Format { GRAYSCALE=1, RGB=3, RGBA=4 };
     TGAImage() = default;
-    TGAImage(const int w, const int h, const int bpp);
+    // TGAImage(const int w, const int h, const int bpp);
+    TGAImage(const int w, const int h, const int bpp, TGAColor c = {});
     bool  read_tga_file(const std::string filename);
     bool write_tga_file(const std::string filename, const bool vflip=true, const bool rle=true) const;
     void flip_horizontally();

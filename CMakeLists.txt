@@ -21,9 +21,23 @@ endif()
 
 find_package(OpenMP COMPONENTS CXX)
 
-set(SOURCES main.cpp model.cpp tgaimage.cpp)
+# set(SOURCES main.cpp model.cpp tgaimage.cpp GL.cpp)
+# file(GLOB SRC_FILES "*.cpp")
+# add_executable(tinyrenderer ${SRC_FILES})
+# add_executable(${PROJECT_NAME} ${SOURCES})
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+# file(GLOB_RECURSE SRC_FILES "${CMAKE_SOURCE_DIR}/*.cpp")
+# add_executable(tinyrenderer ${SRC_FILES})
+
+file(GLOB_RECURSE SRC_FILES
+    "${CMAKE_SOURCE_DIR}/*.cpp"
+)
+
+# 过滤掉 build 目录
+list(FILTER SRC_FILES EXCLUDE REGEX ".*/build/.*")
+
+add_executable(tinyrenderer ${SRC_FILES})
+
 target_link_libraries(${PROJECT_NAME} PRIVATE $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
 
 file(GENERATE OUTPUT .gitignore CONTENT "*")
